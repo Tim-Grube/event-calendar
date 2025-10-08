@@ -1,5 +1,7 @@
-# Event Calendar React Component
+>[!caution]
+> This Repo is in active refactoring, as main repo does not seem to get any updates at the time.
 
+# Event Calendar React Component
 A flexible, interactive calendar component built with [v0](https://v0.dev/) UI components. This calendar provides multiple view modes, drag-and-drop event management, and a clean, responsive interface.
 
 ## Features
