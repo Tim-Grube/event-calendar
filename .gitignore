@@ -56,3 +56,7 @@ certificates
 
 # Turborepo
 .turbo
+
+# IDEs
+.idea/
+.vscode/
