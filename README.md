@@ -1,8 +1,10 @@
->[!caution]
+> [!caution]
 > This Repo is in active refactoring, as main repo does not seem to get any updates at the time.
 
 # Event Calendar React Component
-A flexible, interactive calendar component built with [shadcn](https://ui.shadcn.com/) UI components. This calendar provides multiple view modes, drag-and-drop event management, and a clean, responsive interface.
+
+A flexible, interactive calendar component built with [shadcn](https://ui.shadcn.com/) UI components. This calendar
+provides multiple view modes, drag-and-drop event management, and a clean, responsive interface.
 
 ## Features
 
@@ -18,58 +20,59 @@ A flexible, interactive calendar component built with [shadcn](https://ui.shadcn
 ## Usage
 
 ```tsx
-import { EventCalendar, type CalendarEvent } from "@/components/event-calendar";
+import {EventCalendar, type CalendarEvent} from "@/components/event-calendar";
 
 function App() {
-  const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState([]);
 
-  const handleEventAdd = (event) => {
-    setEvents([...events, event]);
-  };
+    const handleEventAdd = (event) => {
+        setEvents([...events, event]);
+    };
 
-  const handleEventUpdate = (updatedEvent) => {
-    setEvents(events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
-  };
+    const handleEventUpdate = (updatedEvent) => {
+        setEvents(events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
+    };
 
-  const handleEventDelete = (eventId) => {
-    setEvents(events.filter((event) => event.id !== eventId));
-  };
+    const handleEventDelete = (eventId) => {
+        setEvents(events.filter((event) => event.id !== eventId));
+    };
 
-  return (
-    <EventCalendar
-      events={events}
-      onEventAdd={handleEventAdd}
-      onEventUpdate={handleEventUpdate}
-      onEventDelete={handleEventDelete}
-      initialView="month"
-    />
-  );
+    return (
+        <EventCalendar
+            events={events}
+            onEventAdd={handleEventAdd}
+            onEventUpdate={handleEventUpdate}
+            onEventDelete={handleEventDelete}
+            initialView="month"
+        />
+    );
 }
 ```
 
 ## Props
 
-| Prop            | Type                                     | Default   | Description                                |
-| --------------- | ---------------------------------------- | --------- | ------------------------------------------ |
-| `events`        | `CalendarEvent[]`                        | `[]`      | Array of events to display in the calendar |
-| `onEventAdd`    | `(event: CalendarEvent) => void`         | -         | Callback function when an event is added   |
-| `onEventUpdate` | `(event: CalendarEvent) => void`         | -         | Callback function when an event is updated |
-| `onEventDelete` | `(eventId: string) => void`              | -         | Callback function when an event is deleted |
-| `className`     | `string`                                 | -         | Additional CSS class for styling           |
-| `initialView`   | `"month" \| "week" \| "day" \| "agenda"` | `"month"` | Initial view mode of the calendar          |
+| Prop                        | Type                                     | Default   | Description                                                                                    |
+|-----------------------------|------------------------------------------|-----------|------------------------------------------------------------------------------------------------|
+| `events`                    | `CalendarEvent[]`                        | `[]`      | Array of events to display in the calendar                                                     |
+| `onEventAdd`                | `(event: CalendarEvent) => void`         | -         | Callback function when an event is added                                                       |
+| `onEventUpdate`             | `(event: CalendarEvent) => void`         | -         | Callback function when an event is updated                                                     |
+| `onEventDelete`             | `(eventId: string) => void`              | -         | Callback function when an event is deleted                                                     |
+| `className`                 | `string`                                 | -         | Additional CSS class for styling                                                               |
+| `initialView`               | `"month" \| "week" \| "day" \| "agenda"` | `"month"` | Initial view mode of the calendar                                                              |
+| `startOnFirstEventInFuture` | `boolean`                                | `false`   | Sets the initial view onto the timeframe in which the first event lies, if it is in the future |
 
 ## Event Object Structure
 
 ```typescript
 interface CalendarEvent {
-  id: string
-  title: string
-  description?: string
-  start: Date
-  end: Date
-  allDay?: boolean
-  color?: "sky" | "amber" | "violet" | "rose" | "emerald" | "orange"
-  location?: string
+    id: string
+    title: string
+    description?: string
+    start: Date
+    end: Date
+    allDay?: boolean
+    color?: "sky" | "amber" | "violet" | "rose" | "emerald" | "orange"
+    location?: string
 }
 ```
 
@@ -77,7 +80,8 @@ interface CalendarEvent {
 
 ### Month View
 
-Displays a traditional month calendar with events. Events that span multiple days are properly displayed across the days they span.
+Displays a traditional month calendar with events. Events that span multiple days are properly displayed across the days
+they span.
 
 ### Week View
 
@@ -93,12 +97,14 @@ Lists all events in a chronological list format, making it easy to see upcoming 
 
 ## Limitations and Known Issues
 
-This calendar component is in early alpha stage and is not recommended for production use. There are several limitations and issues that need to be addressed:
+This calendar component is in early alpha stage and is not recommended for production use. There are several limitations
+and issues that need to be addressed:
 
 ### Drag and Drop Limitations
 
 - In month view, only the first day of multi-day events is draggable
-- In week and day views, multi-day events are placed in an "All day" section at the top of the view and are not draggable
+- In week and day views, multi-day events are placed in an "All day" section at the top of the view and are not
+  draggable
 - Some drag and drop operations may not update the event data correctly in certain edge cases
 
 ### Visual and UX Issues

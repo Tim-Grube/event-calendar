@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { RiCalendarCheckLine } from "@remixicon/react"
 import {
   addDays,
@@ -40,7 +40,7 @@ import {
   DayView,
   EventDialog,
   EventGap,
-  EventHeight,
+  EventHeight, getInitialDate,
   MonthView,
   WeekCellsHeight,
   WeekView,
@@ -53,6 +53,7 @@ export interface EventCalendarProps {
   onEventDelete?: (eventId: string) => void
   className?: string
   initialView?: CalendarView
+  startOnFirstFutureEvent?: boolean
 }
 
 export function EventCalendar({
@@ -62,8 +63,9 @@ export function EventCalendar({
   onEventDelete,
   className,
   initialView = "month",
+  startOnFirstFutureEvent = false,
 }: EventCalendarProps) {
-  const [currentDate, setCurrentDate] = useState(new Date())
+  const [initialDate, setInitialDate] = useState(startOnFirstFutureEvent ? getInitialDate(events) : new Date())
   const [view, setView] = useState<CalendarView>(initialView)
   const [isEventDialogOpen, setIsEventDialogOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
@@ -107,32 +109,32 @@ export function EventCalendar({
 
   const handlePrevious = () => {
     if (view === "month") {
-      setCurrentDate(subMonths(currentDate, 1))
+      setInitialDate(subMonths(initialDate, 1))
     } else if (view === "week") {
-      setCurrentDate(subWeeks(currentDate, 1))
+      setInitialDate(subWeeks(initialDate, 1))
     } else if (view === "day") {
-      setCurrentDate(addDays(currentDate, -1))
+      setInitialDate(addDays(initialDate, -1))
     } else if (view === "agenda") {
       // For agenda view, go back 30 days (a full month)
-      setCurrentDate(addDays(currentDate, -AgendaDaysToShow))
+      setInitialDate(addDays(initialDate, -AgendaDaysToShow))
     }
   }
 
   const handleNext = () => {
     if (view === "month") {
-      setCurrentDate(addMonths(currentDate, 1))
+      setInitialDate(addMonths(initialDate, 1))
     } else if (view === "week") {
-      setCurrentDate(addWeeks(currentDate, 1))
+      setInitialDate(addWeeks(initialDate, 1))
     } else if (view === "day") {
-      setCurrentDate(addDays(currentDate, 1))
+      setInitialDate(addDays(initialDate, 1))
     } else if (view === "agenda") {
       // For agenda view, go forward 30 days (a full month)
-      setCurrentDate(addDays(currentDate, AgendaDaysToShow))
+      setInitialDate(addDays(initialDate, AgendaDaysToShow))
     }
   }
 
   const handleToday = () => {
-    setCurrentDate(new Date())
+    setInitialDate(new Date())
   }
 
   const handleEventSelect = (event: CalendarEvent) => {
@@ -220,10 +222,10 @@ export function EventCalendar({
 
   const viewTitle = useMemo(() => {
     if (view === "month") {
-      return format(currentDate, "MMMM yyyy")
+      return format(initialDate, "MMMM yyyy")
     } else if (view === "week") {
-      const start = startOfWeek(currentDate, { weekStartsOn: 0 })
-      const end = endOfWeek(currentDate, { weekStartsOn: 0 })
+      const start = startOfWeek(initialDate, { weekStartsOn: 0 })
+      const end = endOfWeek(initialDate, { weekStartsOn: 0 })
       if (isSameMonth(start, end)) {
         return format(start, "MMMM yyyy")
       } else {
@@ -233,20 +235,20 @@ export function EventCalendar({
       return (
         <>
           <span className="min-[480px]:hidden" aria-hidden="true">
-            {format(currentDate, "MMM d, yyyy")}
+            {format(initialDate, "MMM d, yyyy")}
           </span>
           <span className="max-[479px]:hidden min-md:hidden" aria-hidden="true">
-            {format(currentDate, "MMMM d, yyyy")}
+            {format(initialDate, "MMMM d, yyyy")}
           </span>
           <span className="max-md:hidden">
-            {format(currentDate, "EEE MMMM d, yyyy")}
+            {format(initialDate, "EEE MMMM d, yyyy")}
           </span>
         </>
       )
     } else if (view === "agenda") {
       // Show the month range for agenda view
-      const start = currentDate
-      const end = addDays(currentDate, AgendaDaysToShow - 1)
+      const start = initialDate
+      const end = addDays(initialDate, AgendaDaysToShow - 1)
 
       if (isSameMonth(start, end)) {
         return format(start, "MMMM yyyy")
@@ -254,9 +256,9 @@ export function EventCalendar({
         return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`
       }
     } else {
-      return format(currentDate, "MMMM yyyy")
+      return format(initialDate, "MMMM yyyy")
     }
-  }, [currentDate, view])
+  }, [initialDate, view])
 
   return (
     <div
@@ -365,7 +367,7 @@ export function EventCalendar({
         <div className="flex flex-1 flex-col">
           {view === "month" && (
             <MonthView
-              currentDate={currentDate}
+              currentDate={initialDate}
               events={events}
               onEventSelect={handleEventSelect}
               onEventCreate={handleEventCreate}
@@ -373,7 +375,7 @@ export function EventCalendar({
           )}
           {view === "week" && (
             <WeekView
-              currentDate={currentDate}
+              currentDate={initialDate}
               events={events}
               onEventSelect={handleEventSelect}
               onEventCreate={handleEventCreate}
@@ -381,7 +383,7 @@ export function EventCalendar({
           )}
           {view === "day" && (
             <DayView
-              currentDate={currentDate}
+              currentDate={initialDate}
               events={events}
               onEventSelect={handleEventSelect}
               onEventCreate={handleEventCreate}
@@ -389,7 +391,7 @@ export function EventCalendar({
           )}
           {view === "agenda" && (
             <AgendaView
-              currentDate={currentDate}
+              currentDate={initialDate}
               events={events}
               onEventSelect={handleEventSelect}
             />

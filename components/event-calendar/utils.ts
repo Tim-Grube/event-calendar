@@ -141,3 +141,18 @@ export function getAgendaEventsForDay(
     })
     .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
 }
+
+/**
+ * Returns now or the starting time of the first event, depending on which is later
+ * @param events all of the events shown in the current calendar
+ */
+export function getInitialDate(events: CalendarEvent[]) {
+  const now = new Date()
+
+  if (events.length === 0) return now
+
+  const eventsSortedByStart = sortEvents(events)
+  const firstEventStart = eventsSortedByStart[0].start
+
+  return now < firstEventStart ? firstEventStart : now
+}
