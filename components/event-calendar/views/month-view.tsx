@@ -33,6 +33,7 @@ import {
   type CalendarEvent,
 } from "@/components/event-calendar/lib"
 import { DefaultStartHour } from "@/components/event-calendar/lib/constants"
+import { useAuth } from "@/components/event-calendar/auth-provider"
 
 interface MonthViewProps {
   currentDate: Date
@@ -47,6 +48,7 @@ export function MonthView({
   onEventSelect,
   onEventCreate,
 }: MonthViewProps) {
+  const {isAdmin} = useAuth()
   const days = useMemo(() => {
     const monthStart = startOfMonth(currentDate)
     const monthEnd = endOfMonth(monthStart)
@@ -142,6 +144,7 @@ export function MonthView({
                     id={cellId}
                     date={day}
                     onClick={() => {
+                      if (!isAdmin) return;
                       const startTime = new Date(day)
                       startTime.setHours(DefaultStartHour, 0, 0)
                       onEventCreate(startTime)

@@ -8,6 +8,7 @@ import { addHours, areIntervalsOverlapping, eachDayOfInterval, eachHourOfInterva
 import { cn } from "@/lib/utils";
 import { Cell, EventContainer, EventItem, isMultiDayEvent, sortEventsFn, useCurrentTimeIndicator, WeekCellsHeight, type CalendarEvent } from "@/components/event-calendar/lib";
 import { EndHour, StartHour } from "@/components/event-calendar/lib/constants";
+import { useAuth } from "@/components/event-calendar/auth-provider"
 
 
 
@@ -35,6 +36,7 @@ export function WeekView({
   onEventSelect,
   onEventCreate,
 }: WeekViewProps) {
+  const {isAdmin} = useAuth()
   const days = useMemo(() => {
     const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 })
     const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 })
@@ -354,6 +356,7 @@ export function WeekView({
                             "top-[calc(var(--week-cells-height)/4*3)]"
                         )}
                         onClick={() => {
+                          if (!isAdmin) return;
                           const startTime = new Date(day)
                           startTime.setHours(hourValue)
                           startTime.setMinutes(quarter * 15)
